@@ -39,6 +39,9 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
             "if" => set_last_to_ast_type(&mut childrens_to_complete,
                                          NodeType::If,
                                          t.to_string()),
+            "print" => set_last_to_ast_type(&mut childrens_to_complete,
+                                            NodeType::Print,
+                                            t.to_string()),
             val => {
                 let new_node = ASTNode { node_type: NodeType::Val, def: val.to_string(), children: Vec::new() };
                 match childrens_to_complete.last_mut() {

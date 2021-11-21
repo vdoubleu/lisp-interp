@@ -9,7 +9,6 @@ use std::collections::HashMap;
 
 pub fn interp(ast: &ASTNode) -> Res {
     let mut store: HashMap<String, Res> = HashMap::new();
-
     return interp_ast(&ast, &mut store);
 }
 
@@ -35,6 +34,11 @@ fn interp_ast(ast: &ASTNode, store: &mut HashMap<String, Res>) -> Res {
         },
         NodeType::While => interp_while(&ast.children, store),
         NodeType::If => interp_if(&ast.children, store), 
+        NodeType::Print => {
+            let r: Res = interp_ast(&ast.children[0], store);
+            println!("{}", r.to_string());
+            return r;
+        },
         NodeType::Empty => {
             panic!("Interping empty node type");
         },
