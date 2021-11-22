@@ -6,8 +6,8 @@ use crate::ast_type::{
 use crate::tokenize::tokenize;
 use crate::ast_builder::build_ast;
 
-pub fn run_prog(input_str: &String) -> String {
-    let tokens: Vec<String> = tokenize(&input_str);
+pub fn run_prog(prog: &String) -> String {
+    let tokens: Vec<String> = tokenize(&prog);
     let ast: Option<ASTNode> = build_ast(&tokens);
 
     match ast {

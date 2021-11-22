@@ -6,11 +6,13 @@ use crate::ast_type::{
 pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
     let mut childrens_to_complete: Vec<ASTNode> = Vec::new();
 
+    let mut is_def = false;
     for t in tokens {
         match t.as_ref() {
             "(" => {
                 let new_node = ASTNode { node_type: NodeType::Empty, def: "".to_string(), children: Vec::new() };
                 childrens_to_complete.push(new_node);
+                is_def = true;
             },
             ")" => {
                 if childrens_to_complete.len() > 1 {
@@ -24,29 +26,58 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                     }
                 }
             }
-            "+" | "-" | "*" | "/" | ">" | "<" | "<=" | ">=" | "==" => set_last_to_ast_type(&mut childrens_to_complete, 
-                                                          NodeType::NaryOp, 
-                                                          t.to_string()),
-            "seq" => set_last_to_ast_type(&mut childrens_to_complete, 
-                                          NodeType::Seq,
-                                          t.to_string()),
-            "let" => set_last_to_ast_type(&mut childrens_to_complete, 
-                                          NodeType::Let,
-                                          t.to_string()),
-            "while" => set_last_to_ast_type(&mut childrens_to_complete,
-                                            NodeType::While,
-                                            t.to_string()),
-            "if" => set_last_to_ast_type(&mut childrens_to_complete,
-                                         NodeType::If,
-                                         t.to_string()),
-            "print" => set_last_to_ast_type(&mut childrens_to_complete,
-                                            NodeType::Print,
-                                            t.to_string()),
+            "+" | "-" | "*"  | "/"  | ">" | "<" | "<=" | ">=" | "==" => {
+                set_last_to_ast_type(&mut childrens_to_complete, 
+                                     NodeType::NaryOp, 
+                                     t.to_string());
+                is_def = false;
+                }
+            "seq" => {
+                set_last_to_ast_type(&mut childrens_to_complete, 
+                                      NodeType::Seq,
+                                      t.to_string());
+                is_def = false;
+            }
+            "let" => {
+                set_last_to_ast_type(&mut childrens_to_complete, 
+                                     NodeType::Let,
+                                     t.to_string());
+                is_def = false;
+            }
+            "while" => {
+                set_last_to_ast_type(&mut childrens_to_complete,
+                                     NodeType::While,
+                                     t.to_string());
+                is_def = false;
+            }
+            "if" => {
+                set_last_to_ast_type(&mut childrens_to_complete,
+                                     NodeType::If,
+                                     t.to_string());
+                is_def = false;
+            }
+            "print" => {
+                set_last_to_ast_type(&mut childrens_to_complete,
+                                     NodeType::Print,
+                                     t.to_string());
+                is_def = false;
+            }
             val => {
-                let new_node = ASTNode { node_type: NodeType::Val, def: val.to_string(), children: Vec::new() };
-                match childrens_to_complete.last_mut() {
-                    Some(l) => l.children.push(new_node),
-                    None    => childrens_to_complete.push(new_node),
+                if val.chars().next().unwrap() == '_' {
+                    panic!("variable names cannot begin with an underscore: {}", val);
+                }
+
+                if is_def {
+                    set_last_to_ast_type(&mut childrens_to_complete, 
+                                         NodeType::Function,
+                                         t.to_string());
+                    is_def = false;
+                } else {
+                    let new_node = ASTNode { node_type: NodeType::Val, def: val.to_string(), children: Vec::new() };
+                    match childrens_to_complete.last_mut() {
+                        Some(l) => l.children.push(new_node),
+                        None    => childrens_to_complete.push(new_node),
+                    }
                 }
             }
         }

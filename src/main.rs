@@ -3,17 +3,20 @@ mod interp;
 mod ast_type;
 mod tokenize;
 mod ast_builder;
+mod reader;
+mod cleaner;
 
-use std::io;
+use std::env;
 use crate::runner::run_prog;
+use crate::reader::read;
+use crate::cleaner::clean;
 
 pub fn main() {
-    println!("Input Program:");
+    let input_args: Vec<String> = env::args().collect();
 
-    let mut input_str: String = String::new();
-    io::stdin().read_line(&mut input_str).expect("invalid read");
+    let prog: String = read(&input_args);
+    let cleaned_prog: String = clean(&prog);
 
-    let out = run_prog(&input_str);
-    println!("Res: {}", out);
+    run_prog(&cleaned_prog);
 }
 

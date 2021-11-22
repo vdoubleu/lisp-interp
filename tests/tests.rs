@@ -34,3 +34,17 @@ fn run_prog_tests_5() {
     let r2 = "432";
     assert_eq!(r1, r2);
 }
+
+#[test]
+fn run_prog_tests_6() {
+    let r1 = run_prog(&"(seq (let (add n1 n2) (+ n1 n2)) (add 1 2))".to_string());
+    let r2 = "3";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn run_prog_tests_7() {
+    let r1 = run_prog(&"(seq (let (f a) (seq (print a) (if (< a 5) (f (+ a 1)) 0))) (f 0))".to_string());
+    let r2 = "0";
+    assert_eq!(r1, r2);
+}
