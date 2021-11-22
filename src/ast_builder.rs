@@ -26,7 +26,7 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                     }
                 }
             }
-            "+" | "-" | "*"  | "/"  | ">" | "<" | "<=" | ">=" | "==" => {
+            "+" | "-" | "*" | "/"  | ">" | "<" | "<=" | ">=" | "==" | "!=" => {
                 set_last_to_ast_type(&mut childrens_to_complete, 
                                      NodeType::NaryOp, 
                                      t.to_string());

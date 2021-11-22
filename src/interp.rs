@@ -222,7 +222,7 @@ fn interp_nary_op(def: &String, args: &Vec<Res>) -> Res {
 
     match def.as_ref() {
         "+" | "-" | "*" | "/"   => return Res::new_i(int_nary_op(&def, &args)),
-        ">" | ">=" | "<" | "<=" | "==" => return Res::new_b(bool_nary_op(&def, &args)),
+        ">" | ">=" | "<" | "<=" | "==" | "!=" => return Res::new_b(bool_nary_op(&def, &args)),
         _                       => panic!("Unrecognised nary op: {}", &def),
     }
 }
@@ -264,6 +264,7 @@ fn bool_nary_op(def: &String, args: &Vec<Res>) -> bool {
             "<="  => return rest.iter().all(|x| first.get_i() <= x.get_i()),
             ">="  => return rest.iter().all(|x| first.get_i() >= x.get_i()),
             "=="  => return rest.iter().all(|x| first.get_i() == x.get_i()),
+            "!="  => return rest.iter().all(|x| first.get_i() != x.get_i()),
             other =>  panic!("Unrecognised operation: {}", other),
         }
     } else {
