@@ -24,9 +24,11 @@ pub enum DataType {
     NoRes,
     Bool(bool),
     Int(i64),
+    Str(String),
     Func(ASTNode)
 }
 
+#[derive(Debug)]
 pub struct Res {
     pub data_type: DataType,
 }
@@ -62,6 +64,12 @@ impl Res {
         }
     }
 
+    pub fn new_s(s: &String) -> Res {
+        Res {
+            data_type: DataType::Str(s.clone()),
+        }
+    }
+
     pub fn get_i(&self) -> i64 {
         match self.data_type {
             DataType::Int(i) => i,
@@ -83,7 +91,8 @@ impl Res {
             DataType::NoRes => "NoRes".to_string(),
             DataType::Bool(b) => b.to_string(),
             DataType::Int(i) => i.to_string(),
-            DataType::Func(f) => format!("{:?}", f)
+            DataType::Func(f) => format!("{:?}", f),
+            DataType::Str(s) => s.clone()
         }
     }
 }

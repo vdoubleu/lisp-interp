@@ -1,8 +1,28 @@
 pub fn tokenize(s: &String) -> Vec<String> {
     let mut curr_str: String = String::new();
     let mut tokens: Vec<String> = Vec::new();
+    let mut in_string: bool = false;
     for c in s.chars() {
+        if in_string && c != '"' {
+            curr_str.push(c);
+            continue;
+        }
+
         match c {
+            '"' => {
+                if in_string {
+                    curr_str.push('"');
+                    tokens.push(curr_str);
+                    curr_str = "".to_string();
+                } else {
+                    if curr_str.len() != 0 {
+                        tokens.push("\"".to_owned() + &curr_str);
+                    }
+                    curr_str = '"'.to_string();
+                }
+
+                in_string = !in_string;
+            }
             '(' | ')' => {
                 if curr_str.len() != 0 {
                     tokens.push(curr_str);

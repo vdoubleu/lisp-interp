@@ -26,7 +26,7 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                     }
                 }
             }
-            "+" | "-" | "*" | "/"  | ">" | "<" | "<=" | ">=" | "==" | "!=" => {
+            "+" | "-" | "*" | "/"  | ">" | "<" | "<=" | ">=" | "==" | "!=" | "&&" | "||" => {
                 set_last_to_ast_type(&mut childrens_to_complete, 
                                      NodeType::NaryOp, 
                                      t.to_string());
@@ -67,12 +67,13 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                     panic!("variable names cannot begin with an underscore: {}", val);
                 }
 
+                // construct variables in ast
                 if is_def {
                     set_last_to_ast_type(&mut childrens_to_complete, 
                                          NodeType::Function,
                                          t.to_string());
                     is_def = false;
-                } else {
+                } else { // variable constants
                     let new_node = ASTNode { node_type: NodeType::Val, def: val.to_string(), children: Vec::new() };
                     match childrens_to_complete.last_mut() {
                         Some(l) => l.children.push(new_node),

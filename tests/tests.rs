@@ -48,3 +48,38 @@ fn run_prog_tests_7() {
     let r2 = "0";
     assert_eq!(r1, r2);
 }
+
+#[test]
+fn run_prog_tests_8() {
+    let r1 = run_prog(&"(> 1 2)".to_string());
+    let r2 = "false";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn run_prog_tests_9() {
+    let r1 = run_prog(&"(> 2 1)".to_string());
+    let r2 = "true";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn run_prog_tests_10() {
+    let r1 = run_prog(&"(&& (< 2 1) (> 2 1))".to_string());
+    let r2 = "false";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn run_prog_tests_11() {
+    let r1 = run_prog(&"(|| (< 2 1) (> 2 1))".to_string());
+    let r2 = "true";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn run_prog_tests_12() {
+    let r1 = run_prog(&"(+   \"front \"   \"mid \"  \"back\")".to_string());
+    let r2 = "front mid back";
+    assert_eq!(r1, r2);
+}
