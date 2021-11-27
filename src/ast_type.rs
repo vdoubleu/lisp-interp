@@ -6,6 +6,7 @@ pub enum NodeType {
     Seq,
     While,
     If,
+    Import,
     BuiltinFunction,
     Function,
     Empty

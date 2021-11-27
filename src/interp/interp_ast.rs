@@ -5,6 +5,7 @@ use crate::interp::interp_while::interp_while;
 use crate::interp::interp_let::interp_let;
 use crate::interp::interp_nary::interp_nary_op;
 use crate::interp::interp_builtin::interp_builtin;
+use crate::interp::interp_import::interp_import;
 use crate::ast_type::{
     ASTNode,
     Res,
@@ -29,6 +30,7 @@ pub fn interp_ast(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res {
         },
         NodeType::While => interp_while(&ast.children, store),
         NodeType::If => interp_if(&ast.children, store), 
+        NodeType::Import => interp_import(&ast.children, store),
         NodeType::BuiltinFunction => interp_builtin(&ast.def, &ast.children, store),
         NodeType::Function => interp_func(&ast, store),
         NodeType::Empty => {

@@ -6,6 +6,7 @@ mod interp_if;
 mod interp_nary;
 mod interp_while;
 mod interp_builtin;
+mod interp_import;
 mod utils;
 
 use crate::ast_type::{
@@ -21,3 +22,6 @@ pub fn interp(ast: &ASTNode) -> Res {
     return interp_ast(&ast, &mut store);
 }
 
+pub fn interp_with_store(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res {
+    return interp_ast(&ast, store);
+}

@@ -56,7 +56,13 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                                      t.to_string());
                 is_def = false;
             }
-            "print" | "println" | "read" | "len" | "num" | "str" | "bool" => {
+            "import" => {
+                set_last_to_ast_type(&mut childrens_to_complete,
+                                     NodeType::Import,
+                                     t.to_string());
+                is_def = false;
+            }
+            "print" | "println" | "read" | "len" | "num" | "str" | "bool" | "shell" => {
                 set_last_to_ast_type(&mut childrens_to_complete,
                                      NodeType::BuiltinFunction,
                                      t.to_string());

@@ -42,7 +42,6 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
                 panic!("len takes a string argument, the following is not a string: {}", interp_res.to_string());
             }
         },
-        
         "str" => {
             let mut s = String::new();
             for arg in args {
@@ -53,11 +52,12 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "num" => {
             let mut s = String::new();
             for arg in args {
-                match interp_ast(arg, store) {
+                let r = interp_ast(arg, store);
+                match r {
                     Res::Int(i) => s.push_str(i.to_string().as_str()),
                     Res::Str(st) => s.push_str(st.to_string().as_str()),
                     Res::Bool(b) => s.push_str(if b { "1" } else { "0" }),
-                    _ => panic!("num takes an argument that can be converted to a number, the following cannot: {}", interp_ast(arg, store).to_string())
+                    _ => panic!("num takes an argument that can be converted to a number, the following cannot: {}", r.to_string())
                 }
             }
             return Res::Int(s.parse::<i64>().unwrap());
@@ -65,14 +65,30 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "bool" => {
             let mut s = String::new();
             for arg in args {
-                match interp_ast(arg, store) {
+                let r = interp_ast(arg, store);
+                match r {
                     Res::Int(i) => s.push_str(if i == 0 { "false" } else { "true" }),
                     Res::Str(st) => s.push_str(&st),
                     Res::Bool(b) => s.push_str(if b { "true" } else { "false" }),
-                    _ => panic!("bool takes an argument that can be converted to a boolean, the following cannot: {}", interp_ast(arg, store).to_string())
+                    _ => panic!("bool takes an argument that can be converted to a boolean, the following cannot: {}", r.to_string())
                 }
             }
             return Res::Bool(s.parse::<bool>().unwrap());
+        },
+        "shell" => {
+            let mut s = String::new();
+            for arg in args {
+                s.push_str(&(interp_ast(arg, store).to_string() + " "));
+            }
+            let output = std::process::Command::new("sh")
+                .arg("-c")
+                .arg(s.as_str())
+                .output()
+                .expect("failed to execute process");
+                
+            println!("{}\n", &s);
+            println!("{}", String::from_utf8_lossy(&output.stdout));
+            return Res::Str(String::from_utf8(output.stdout).unwrap());
         },
         _ => {
             panic!("Unknown builtin function: {}", def);

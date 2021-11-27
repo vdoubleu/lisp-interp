@@ -1,6 +1,6 @@
 pub fn tokenize(s: &String) -> Vec<String> {
     let mut curr_str: String = String::new();
-    let mut tokens: Vec<String> = Vec::new();
+    let mut tokens: Vec<String> = vec!["(".to_string(), "seq".to_string()];
     let mut in_string: bool = false;
     for c in s.chars() {
         if in_string && c != '"' {
@@ -47,6 +47,8 @@ pub fn tokenize(s: &String) -> Vec<String> {
             }
         }
     }
+
+    tokens.push(")".to_string());
 
     return tokens;
 }

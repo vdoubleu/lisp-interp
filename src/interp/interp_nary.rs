@@ -17,14 +17,7 @@ pub fn interp_nary_op(def: &String, args: &Vec<Res>) -> Res {
             return Res::Int(int_nary_op(&def, &args));
         },
         "==" | "!=" => {
-            //if check_res_vec_all_type(&args, Res::Bool(false)) {
-            //    return Res::new_b(bool_nary_op(&def, &args));
-            //} else 
-            if check_res_vec_all_type(&args, Res::Int(0)) {
-                return Res::Bool(bool_nary_op(&def, &args));
-            }
-            
-            panic!("Expected int type, bool type, or string type in arg, for variable but instead got something else: {:?}", &args);
+            return Res::Bool(equality_nary_op(&def, &args));
         },
         ">" | ">=" | "<" | "<=" => {
             if !check_res_vec_all_type(&args, Res::Int(0)) {
@@ -111,6 +104,47 @@ fn int_nary_op(def: &String, args: &Vec<Res>) -> i64 {
     }
 }
 
+fn equality_nary_op(def: &String, args: &Vec<Res>) -> bool {
+    let mut int_args: Vec<i64> = Vec::new();
+    let mut string_args: Vec<String> = Vec::new();
+    let mut bool_args: Vec<bool> = Vec::new();
+
+    for arg in args {
+        match arg {
+            Res::Int(i) => int_args.push(*i),
+            Res::Str(s) => string_args.push(s.clone()),
+            Res::Bool(b) => bool_args.push(*b),
+            _ => panic!("unexpected type in equality op"),
+        }
+    }
+
+    match def.as_ref() {
+        "==" => {
+            if int_args.len() == args.len() {
+                return int_args.iter().all(|x| *x == *int_args.first().unwrap());
+            } else if string_args.len() == args.len() {
+                return string_args.iter().all(|x| *x == *string_args.first().unwrap());
+            } else if bool_args.len() == args.len() {
+                return bool_args.iter().all(|x| *x == *bool_args.first().unwrap());
+            } else {
+                panic!("unexpected type in equality op");
+            }
+        },
+        "!=" => {
+            if int_args.len() == args.len() {
+                return int_args.iter().any(|x| *x != *int_args.first().unwrap());
+            } else if string_args.len() == args.len() {
+                return string_args.iter().any(|x| *x != *string_args.first().unwrap());
+            } else if bool_args.len() == args.len() {
+                return bool_args.iter().any(|x| *x != *bool_args.first().unwrap());
+            } else {
+                panic!("unexpected type in inequality op");
+            }
+        },
+        other => panic!("Unrecognised operation: {}", other),
+    }
+}
+
 fn bool_nary_op(def: &String, args: &Vec<Res>) -> bool {
     fn get_int_or_panic(r: &Res) -> i64 {
         match r {
@@ -126,8 +160,6 @@ fn bool_nary_op(def: &String, args: &Vec<Res>) -> bool {
                 "<"   => return rest.iter().all(|x| *first_i < get_int_or_panic(x)),
                 "<="  => return rest.iter().all(|x| *first_i <= get_int_or_panic(x)),
                 ">="  => return rest.iter().all(|x| *first_i >= get_int_or_panic(x)),
-                "=="  => return rest.iter().all(|x| *first_i == get_int_or_panic(x)),
-                "!="  => return rest.iter().all(|x| *first_i != get_int_or_panic(x)),
                 other =>  panic!("Unrecognised operation: {}", other),
             }
         } else {
