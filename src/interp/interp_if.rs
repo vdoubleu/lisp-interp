@@ -2,8 +2,7 @@ use std::collections::HashMap;
 use crate::interp::interp_ast;
 use crate::ast_type::{
     ASTNode,
-    Res,
-    DataType
+    Res
 };
 
 pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>) -> Res {
@@ -13,10 +12,10 @@ pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>)
         }
 
         let r: Res = interp_ast(first, store);
-        let cond: bool = match r.data_type {
-            DataType::Bool(b)  => b,
-            DataType::Int(i)   => i >= 1,
-            DataType::NoRes    => false,
+        let cond: bool = match r {
+            Res::Bool(b)  => b,
+            Res::Int(i)   => i >= 1,
+            Res::NoRes    => false,
             _other  => panic!("Invalid return type function"),
         };
 
@@ -28,7 +27,7 @@ pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>)
             return interp_ast(&rest[1], store);
         }
 
-        return Res::new();
+        return Res::NoRes;
     } else {
         panic!("Expected two or 3 args for if, but found: {}", children.len());
     }

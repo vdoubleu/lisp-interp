@@ -18,7 +18,7 @@ pub fn interp_let(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>
             let child_res: Res = interp_ast(&children[1], store);
             
             match store.last_mut() {
-                Some(h) => h.insert(let_var.def.clone(), Res::copy(&child_res)),
+                Some(h) => h.insert(let_var.def.clone(), Res::clone(&child_res)),
                 None    => panic!("Store has zero level in stack"),
             };
             return child_res;
@@ -30,15 +30,15 @@ pub fn interp_let(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>
                 }
             }
 
-            let func_body = Res::new_f(&children[1]);
+            let func_body = Res::Func(children[1].clone());
 
-            let func_args = Res::new_f(&let_var);
+            let func_args = Res::Func(let_var.clone());
             let func_args_name = get_func_args_name_from_def(&let_var.def);
 
             match store.last_mut() {
                 Some(h) => {
-                    h.insert(let_var.def.clone(), Res::copy(&func_body));
-                    h.insert(func_args_name, Res::copy(&func_args));
+                    h.insert(let_var.def.clone(), Res::clone(&func_body));
+                    h.insert(func_args_name, Res::clone(&func_args));
                 },
                 None    => panic!("Store has zero level in stack"),
             };

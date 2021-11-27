@@ -5,6 +5,7 @@ mod interp_let;
 mod interp_if;
 mod interp_nary;
 mod interp_while;
+mod interp_builtin;
 mod utils;
 
 use crate::ast_type::{

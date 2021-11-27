@@ -5,7 +5,7 @@ use crate::ast_type::{
 
 pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
     let mut childrens_to_complete: Vec<ASTNode> = Vec::new();
-
+    
     let mut is_def = false;
     for t in tokens {
         match t.as_ref() {
@@ -56,9 +56,9 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                                      t.to_string());
                 is_def = false;
             }
-            "print" => {
+            "print" | "println" | "read" | "len" | "num" | "str" | "bool" => {
                 set_last_to_ast_type(&mut childrens_to_complete,
-                                     NodeType::Print,
+                                     NodeType::BuiltinFunction,
                                      t.to_string());
                 is_def = false;
             }
