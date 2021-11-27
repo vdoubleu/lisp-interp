@@ -1,9 +1,9 @@
 # Faux Lisp 
 
-A faux lisp interpreter written in Rust. A general programming language with a lisp-like syntax. It currently supports basic expressions like while loops, if statements, functions and variables.
+A faux lisp interpreter written in Rust. A general programming language with a lisp-like syntax. It currently supports basic expressions like while loops, if statements, functions, modules, and variables; as well as standard data types like strings, numbers, and booleans.
 
 # Build and Run
- To build the interpreter, first clone the repositoyr. Then ,simply run `cargo build --release` in the main directory of the project. After that, you should be able to find the binary under `target/release`.
+ To build the interpreter, first clone the repository. Then ,simply run `cargo build --release` in the main directory of the project. After that, you should be able to find the binary under `target/release`.
 
 # Features
 The most basic program looks like this:
@@ -12,7 +12,7 @@ The most basic program looks like this:
 ```
 This is a simple program that adds together 1 and 2. However, this does not actually output anything. To do that, we will need:
 ```
-(print (+ 1 2))
+(println (+ 1 2))
 ```
 With this, we will print out the result of this addition. Note that the language currently only supports the basic 4 math operations: +, -, \*, and /.
 
@@ -48,7 +48,7 @@ Doing so allows the user to use certain language features more effectively:
 ```
 (seq
   (let n 2)
-  (print n))
+  (println n))
 ```
 
 Below are a few examples of what can be done in this language:
@@ -81,6 +81,27 @@ Here is a program that outputs the nth Fibonacci number recursively:
         1
         (+ (fib (- n 2)) (fib (- n 1))))))
 
-  (print (fib 5))
+  (println (fib 5))
 )
 ```
+
+You can also store and separate your code in several different files, and import them into your main file using `(import <file-name>)`. This will allow you to import all the functions and variables defined in another file into your current one.
+```
+;; main.ls
+(import "module.ls")
+(print testvar)
+```
+
+```
+;; module.ls
+(let testvar 4)
+```
+
+Working with data types like booleans and strings is as you would expect.
+```
+(print (+ "hello " "there"))
+(print (if (&& true (== "first" "second")) (len "true case") "false case"))
+(print (== "3" (string (num "3"))))
+```
+
+
