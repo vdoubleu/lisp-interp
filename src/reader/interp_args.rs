@@ -4,3 +4,13 @@ pub struct InterpArgs {
     pub print_tokens: bool,
     pub file_name: Option<String>
 }
+
+impl InterpArgs {
+    pub fn default() -> InterpArgs {
+        InterpArgs {
+            no_interp: false,
+            print_tokens: false,
+            file_name: None
+        }
+    }
+}

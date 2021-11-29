@@ -1,4 +1,4 @@
-use interp::runner::run_prog;
+use interp::runner::run_just_prog;
 
 #[test]
 fn fib_rec() {
@@ -14,7 +14,7 @@ fn fib_rec() {
     (print (fib 5))
 )
 "#;
-    let output = run_prog(&prog.to_string()).to_string();
+    let output = run_just_prog(&prog.to_string()).to_string();
     assert_eq!(output, "8");
 }
 
@@ -36,6 +36,6 @@ fn fib_iter() {
         (print b)
       )
 "#;
-    let output = run_prog(&prog.to_string()).to_string();
+    let output = run_just_prog(&prog.to_string()).to_string();
     assert_eq!(output, "13");
 }

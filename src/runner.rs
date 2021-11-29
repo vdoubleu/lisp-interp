@@ -45,6 +45,20 @@ pub fn run_prog_with_store(prog: &String, store: &mut Vec<HashMap<String, Res>>,
     }
 }
 
+// used by test cases
+#[allow(dead_code)]
+pub fn run_just_prog(prog: &String) -> Res {
+    let ast: Option<ASTNode> = prep_prog(prog, &InterpArgs::default());
+
+    match ast {
+        Some(a) => {
+            let res: Res = interp(&a, &InterpArgs::default());
+            return res;
+        },
+        None    => panic!("No AST built"),
+    }
+}
+
 fn prep_prog(prog: &String, interp_args: &InterpArgs) -> Option<ASTNode> {
     let cleaned_prog: String = clean(&prog);
     let tokens: Vec<String> = tokenize(&cleaned_prog);
