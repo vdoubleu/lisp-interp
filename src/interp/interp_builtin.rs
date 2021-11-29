@@ -3,15 +3,16 @@ use crate::ast_type::{
     Res,
     ASTNode
 };
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
 
-pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     match def.as_str() {
         "print" => {
             let mut s = String::new();
             for arg in args {
-                s.push_str(interp_ast(arg, store).to_string().as_str());
+                s.push_str(interp_ast(arg, store, interp_args).to_string().as_str());
             }
             print!("{}", s);
             return Res::Str(s);
@@ -19,7 +20,7 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "println" => {
             let mut s = String::new();
             for arg in args {
-                s.push_str(interp_ast(arg, store).to_string().as_str());
+                s.push_str(interp_ast(arg, store, interp_args).to_string().as_str());
             }
             println!("{}", s);
             return Res::Str(s);
@@ -35,7 +36,7 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
             }
 
             let arg = args[0].clone();
-            let interp_res = interp_ast(&arg, store);
+            let interp_res = interp_ast(&arg, store, interp_args);
             if let Res::Str(s) = interp_res {
                 return Res::Int(s.len() as i64);
             } else {
@@ -45,14 +46,14 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "str" => {
             let mut s = String::new();
             for arg in args {
-                s.push_str(interp_ast(arg, store).to_string().as_str());
+                s.push_str(interp_ast(arg, store, interp_args).to_string().as_str());
             }
             return Res::Str(s);
         },
         "num" => {
             let mut s = String::new();
             for arg in args {
-                let r = interp_ast(arg, store);
+                let r = interp_ast(arg, store, interp_args);
                 match r {
                     Res::Int(i) => s.push_str(i.to_string().as_str()),
                     Res::Str(st) => s.push_str(st.to_string().as_str()),
@@ -65,7 +66,7 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "bool" => {
             let mut s = String::new();
             for arg in args {
-                let r = interp_ast(arg, store);
+                let r = interp_ast(arg, store, interp_args);
                 match r {
                     Res::Int(i) => s.push_str(if i == 0 { "false" } else { "true" }),
                     Res::Str(st) => s.push_str(&st),
@@ -78,7 +79,7 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
         "shell" => {
             let mut s = String::new();
             for arg in args {
-                s.push_str(&(interp_ast(arg, store).to_string() + " "));
+                s.push_str(&(interp_ast(arg, store, interp_args).to_string() + " "));
             }
             let output = std::process::Command::new("sh")
                 .arg("-c")

@@ -5,9 +5,10 @@ use crate::ast_type::{
     NodeType
 };
 use crate::interp::utils::get_func_args_name_from_def;
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
-pub fn interp_let(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_let(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     if children.len() != 2 {
         panic!("Invalid number of children of let, expected 2, got: {}", children.len());
     }
@@ -15,7 +16,7 @@ pub fn interp_let(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>
     let let_var: &ASTNode = &(children[0]);
     match let_var.node_type {
         NodeType::Val => {
-            let child_res: Res = interp_ast(&children[1], store);
+            let child_res: Res = interp_ast(&children[1], store, interp_args);
             
             match store.last_mut() {
                 Some(h) => h.insert(let_var.def.clone(), Res::clone(&child_res)),

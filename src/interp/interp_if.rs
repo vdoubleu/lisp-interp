@@ -4,14 +4,15 @@ use crate::ast_type::{
     ASTNode,
     Res
 };
+use crate::reader::interp_args::InterpArgs;
 
-pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     if let Some((first, rest)) = children.split_first() {
         if children.len() >= 4 {
             panic!("Expected two or 3 args for if, but found: {}", children.len());
         }
 
-        let r: Res = interp_ast(first, store);
+        let r: Res = interp_ast(first, store, interp_args);
         let cond: bool = match r {
             Res::Bool(b)  => b,
             Res::Int(i)   => i >= 1,
@@ -20,11 +21,11 @@ pub fn interp_if(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>)
         };
 
         if cond {
-            return interp_ast(&rest[0], store);
+            return interp_ast(&rest[0], store, interp_args);
         }
 
         if /* !cond && */ rest.len() == 2 {
-            return interp_ast(&rest[1], store);
+            return interp_ast(&rest[1], store, interp_args);
         }
 
         return Res::NoRes;

@@ -23,18 +23,12 @@ pub fn tokenize(s: &String) -> Vec<String> {
 
                 in_string = !in_string;
             }
-            '(' | ')' => {
+            '(' | ')' | '[' | ']' => {
                 if curr_str.len() != 0 {
                     tokens.push(curr_str);
                     curr_str = "".to_string();
                 }
-                tokens.push(
-                    if c == '(' {
-                        "(".to_string()
-                    } else {
-                        ")".to_string()
-                    }
-                );
+                tokens.push(c.to_string());
             }
             ' ' | '\n' => {
                 if curr_str.len() != 0 {

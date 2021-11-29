@@ -11,28 +11,29 @@ use crate::ast_type::{
     Res,
     NodeType,
 };
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
-pub fn interp_ast(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_ast(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     match ast.node_type {
         NodeType::NaryOp => {
-            let interped_children: Vec<Res> = ast.children.iter().map(|c| interp_ast(&c, store)).collect();
+            let interped_children: Vec<Res> = ast.children.iter().map(|c| interp_ast(&c, store, interp_args)).collect();
             return interp_nary_op(&ast.def, &interped_children);
         }
         NodeType::Val => interp_val(&ast.def, &store, false),
-        NodeType::Let => interp_let(&ast.children, store),
+        NodeType::Let => interp_let(&ast.children, store, interp_args),
         NodeType::Seq => {
             let mut res: Res = Res::NoRes;
             for s in &ast.children {
-                res = interp_ast(s, store);
+                res = interp_ast(s, store, interp_args);
             }
             return res;
         },
-        NodeType::While => interp_while(&ast.children, store),
-        NodeType::If => interp_if(&ast.children, store), 
-        NodeType::Import => interp_import(&ast.children, store),
-        NodeType::BuiltinFunction => interp_builtin(&ast.def, &ast.children, store),
-        NodeType::Function => interp_func(&ast, store),
+        NodeType::While => interp_while(&ast.children, store, interp_args),
+        NodeType::If => interp_if(&ast.children, store, interp_args), 
+        NodeType::Import => interp_import(&ast.children, store, interp_args),
+        NodeType::BuiltinFunction => interp_builtin(&ast.def, &ast.children, store, interp_args),
+        NodeType::Function => interp_func(&ast, store, interp_args),
         NodeType::Empty => {
             panic!("Interping empty node type");
         },

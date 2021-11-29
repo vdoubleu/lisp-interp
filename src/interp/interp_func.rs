@@ -5,9 +5,10 @@ use crate::ast_type::{
     ASTNode,
     Res
 };
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
-pub fn interp_func(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_func(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     let func_body: Res = interp_val(&ast.def, store, true);
 
     match func_body {
@@ -22,7 +23,7 @@ pub fn interp_func(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res 
                                ast.children.len(), fa.children.len());
                     }
 
-                    let func_arg_res: Vec<Res> = ast.children.iter().map(|c| interp_ast(c, store)).collect();
+                    let func_arg_res: Vec<Res> = ast.children.iter().map(|c| interp_ast(c, store, interp_args)).collect();
 
                     // map func args
                     store.push(HashMap::new());
@@ -36,7 +37,7 @@ pub fn interp_func(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>) -> Res 
                         panic!("new level in store not properly added?");
                     }
 
-                    let func_res: Res = interp_ast(&fb, store);
+                    let func_res: Res = interp_ast(&fb, store, interp_args);
                     store.pop();
 
                     return func_res;

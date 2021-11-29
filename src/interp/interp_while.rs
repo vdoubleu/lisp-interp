@@ -3,11 +3,12 @@ use crate::ast_type::{
     Res
 };
 use crate::interp::interp_ast::interp_ast;
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
-pub fn interp_while(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>) -> Res {
+pub fn interp_while(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
     if let Some((first, rest)) = children.split_first() {
-        let mut r: Res = interp_ast(first, store);
+        let mut r: Res = interp_ast(first, store, interp_args);
         let mut keep_looping: bool = match r {
             Res::Bool(b)  => b,
             Res::Int(i)   => i >= 1,
@@ -18,10 +19,10 @@ pub fn interp_while(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res
         let mut res: Res = Res::NoRes;
         while keep_looping {
             for s in rest {
-                res = interp_ast(s, store);
+                res = interp_ast(s, store, interp_args);
             }
 
-            r = interp_ast(first, store);
+            r = interp_ast(first, store, interp_args);
             keep_looping = match r {
                 Res::Bool(b)  => b,
                 Res::Int(i)   => i >= 1,

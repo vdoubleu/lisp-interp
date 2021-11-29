@@ -6,15 +6,17 @@ mod ast_builder;
 mod reader;
 mod cleaner;
 
-use std::env;
 use crate::runner::run_prog;
-use crate::reader::read;
+use crate::reader::{
+    read,
+    get_args
+};
+use crate::reader::interp_args::InterpArgs;
 
 pub fn main() {
-    let input_args: Vec<String> = env::args().collect();
+    let interp_args: InterpArgs = get_args();
+    let prog: String = read(&interp_args);
 
-    let prog: String = read(&input_args);
-
-    run_prog(&prog);
+    run_prog(&prog, &interp_args);
 }
 

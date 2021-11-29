@@ -30,16 +30,6 @@ pub enum Res {
 }
 
 impl Res {
-
-    /*
-    pub fn get_b(&self) -> bool {
-        match self.data_type {
-            DataType::Bool(b) => b,
-            _ => panic!("Trying to retrieve bool, but is not bool"),
-        }
-    }
-    */
-
     pub fn to_string(&self) -> String {
         match &self {
             Res::NoRes => "NoRes".to_string(),
