@@ -23,7 +23,7 @@ pub fn interp_ast(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>, interp_a
             let interped_children: Vec<Res> = ast.children.iter().map(|c| interp_ast(&c, store, interp_args)).collect();
             return interp_nary_op(&ast.def, &interped_children);
         }
-        NodeType::Val => interp_val(&ast.def, &store, false),
+        NodeType::Val => interp_val(&ast.def, store, interp_args, false),
         NodeType::Let => interp_let(&ast.children, store, interp_args),
         NodeType::Seq => {
             let mut res: Res = Res::NoRes;

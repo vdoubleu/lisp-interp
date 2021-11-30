@@ -1,0 +1,33 @@
+(let (reverse full-lst)
+    (seq
+    (let (rev-help lst acc)
+        (if (== 0 (len lst))
+        acc
+        (rev-help (rest lst) (cons (first lst) acc))))
+    (rev-help full-lst [])))
+
+(let (empty? lst)
+    (== (len lst) 0))
+
+(let (second lst)
+    (first (rest lst)))
+
+(let (third lst)
+    (first (rest (rest lst))))
+
+(let (last lst)
+    (if (empty? (rest lst))
+        (first lst)
+        (last (rest lst))))
+
+(let (ind lst i)
+    (if (empty? lst)
+        []
+    (if (== i 0)
+        (first lst)
+        (ind (rest lst) (- i 1)))))
+
+(let (append lst n)
+    (if (empty? lst)
+        [n]
+        (cons (first lst) (append (rest lst) n))))

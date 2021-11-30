@@ -44,14 +44,24 @@ pub fn get_args() -> InterpArgs {
             .long("print-tokens")
             .short('t')
             .required(false))
+        .arg(Arg::new("lib-path")
+            .about("path to stdlib root directory")
+            .long("lib-path")
+            .short('l')
+            .required(false)
+            .takes_value(true))
         .arg(Arg::new("<input-file>").required(false))
         .get_matches();
 
-    let i = matches.is_present("no-interp");
 
     return InterpArgs {
-        no_interp: i,
+        no_interp: matches.is_present("no-interp"),
         print_tokens: matches.is_present("print-tokens"),
         file_name: matches.value_of("<input-file>").map(|s| s.to_string()),
+        lib_path: if matches.is_present("lib-path") {
+            matches.value_of("lib-path").unwrap().to_string()
+        } else {
+            String::from("")
+        },
     };
 }

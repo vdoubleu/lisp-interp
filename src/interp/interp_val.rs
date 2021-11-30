@@ -1,7 +1,27 @@
 use crate::ast_type::Res;
+use crate::interp::importer::{
+    get_stdlib,
+    import_module
+};
+use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
-pub fn interp_val(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: bool) -> Res {
+pub fn interp_val(def: &String, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs, permit_func: bool) -> Res {
+    let first_attempt = interp_val_splitter(def, store, permit_func);
+
+    if first_attempt != Res::NoRes {
+        return first_attempt
+    } else if let Some(lib) = get_stdlib(&def) {
+        import_module(&lib, store, &interp_args);
+        let second_attempt = interp_val_splitter(def, store, permit_func);
+        if second_attempt != Res::NoRes {
+            return second_attempt;
+        } 
+    }
+    panic!("Could not find value for {}", def);
+}
+
+fn interp_val_splitter(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: bool) -> Res {
     if let Some(i) = val_is_int(&def) {
         return Res::Int(i);
     } else if let Some(b) = val_is_bool(&def) {
@@ -11,7 +31,7 @@ pub fn interp_val(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: 
     } else if let Some(v) = val_is_var(&def, &store, permit_func) {
         return v;
     } else {
-        panic!("Variable not define: {}", &def);
+        return Res::NoRes;
     }
 }
 

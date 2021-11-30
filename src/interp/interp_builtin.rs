@@ -149,7 +149,7 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
                 out.push(interp_res1);
                 return Res::List(out);
             } else {
-                panic!("cons takes two lists");
+                panic!("cons second arg must be a list: {}", interp_res2.to_string());
             }
         },
         _ => {

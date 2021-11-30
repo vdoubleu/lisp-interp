@@ -4,8 +4,7 @@ use crate::ast_type::{
     Res,
 };
 use crate::reader::interp_args::InterpArgs;
-use crate::runner::run_prog_with_store;
-use crate::reader::read;
+use crate::interp::importer::import_module;
 use std::collections::HashMap;
 
 pub fn interp_import(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
@@ -29,11 +28,3 @@ pub fn interp_import(children: &Vec<ASTNode>, store: &mut Vec<HashMap<String, Re
     return import_res;
 }
 
-fn import_module(path: &String, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
-    let mut file_interp_args: InterpArgs = interp_args.clone();
-    file_interp_args.file_name = Some(path.clone());
-    let file_contents = read(&file_interp_args);
-    
-    let res = run_prog_with_store(&file_contents, store, interp_args);
-    return res;
-}

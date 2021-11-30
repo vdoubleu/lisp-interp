@@ -9,12 +9,12 @@ use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
 pub fn interp_func(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
-    let func_body: Res = interp_val(&ast.def, store, true);
+    let func_body: Res = interp_val(&ast.def, store, interp_args,  true);
 
     match func_body {
         Res::Func(fb) => {
             let func_args_name = get_func_args_name_from_def(&ast.def);
-            let func_args: Res = interp_val(&func_args_name, store, true);
+            let func_args: Res = interp_val(&func_args_name, store, interp_args, true);
 
             match func_args {
                 Res::Func(fa) => {
