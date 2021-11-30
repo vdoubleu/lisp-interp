@@ -37,34 +37,10 @@ pub fn build_ast(tokens: &Vec<String>) -> Option<ASTNode> {
                                      t.to_string());
                 next_is_def = false;
                 }
-            "seq" => {
+            s  if is_direct_mapped_func(&s.to_string()) => {
                 set_last_to_ast_type(&mut childrens_to_complete, 
-                                      NodeType::Seq,
+                                      direct_map_func(&s.to_string()),
                                       t.to_string());
-                next_is_def = false;
-            }
-            "let" => {
-                set_last_to_ast_type(&mut childrens_to_complete, 
-                                     NodeType::Let,
-                                     t.to_string());
-                next_is_def = false;
-            }
-            "while" => {
-                set_last_to_ast_type(&mut childrens_to_complete,
-                                     NodeType::While,
-                                     t.to_string());
-                next_is_def = false;
-            }
-            "if" => {
-                set_last_to_ast_type(&mut childrens_to_complete,
-                                     NodeType::If,
-                                     t.to_string());
-                next_is_def = false;
-            }
-            "import" => {
-                set_last_to_ast_type(&mut childrens_to_complete,
-                                     NodeType::Import,
-                                     t.to_string());
                 next_is_def = false;
             }
             s if is_builtin(&s.to_string()) => {
@@ -108,6 +84,22 @@ fn is_builtin(s: &String) -> bool {
     return built_ins.contains(&s.as_str());
 }
 
+fn is_direct_mapped_func(s: &String) -> bool {
+    let direct_mapped_funcs = vec!("seq", "let", "while", "if", "import");
+    return direct_mapped_funcs.contains(&s.as_str());
+}
+
+fn direct_map_func(s: &String) -> NodeType {
+    match s.as_str() {
+        "seq" => NodeType::Seq,
+        "let" => NodeType::Let,
+        "while" => NodeType::While,
+        "if" => NodeType::If,
+        "import" => NodeType::Import,
+        _ => panic!("direct mapped func not found: {}", s),
+    }
+}
+
 fn set_last_to_ast_type(childrens_to_complete: &mut Vec<ASTNode>, typ: NodeType, def: String) {
     match childrens_to_complete.last_mut() {
         Some(l) => match l.node_type {
@@ -119,4 +111,16 @@ fn set_last_to_ast_type(childrens_to_complete: &mut Vec<ASTNode>, typ: NodeType,
         }
         _       => panic!("No body for operators??: {}", def),
     }
+}
+
+#[test]
+fn test_set_last_to_ast_type() {
+    let mut childrens_to_complete: Vec<ASTNode> = Vec::new();
+    let new_node = ASTNode { node_type: NodeType::Empty, def: "".to_string(), children: Vec::new() };
+    childrens_to_complete.push(new_node);
+    set_last_to_ast_type(&mut childrens_to_complete, 
+                         NodeType::NaryOp, 
+                         "".to_string());
+    assert_eq!(childrens_to_complete[0].node_type, NodeType::NaryOp);
+    assert_eq!(childrens_to_complete[0].def, "");
 }
