@@ -40,6 +40,7 @@ fn val_is_var(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: bool
                     } else {
                         panic!("first class functions not supported");
                     },
+                Res::List(l) => return Some(Res::List(l)),
             }
         } 
     }

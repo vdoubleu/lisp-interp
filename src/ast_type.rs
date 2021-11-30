@@ -7,6 +7,7 @@ pub enum NodeType {
     While,
     If,
     Import,
+    List,
     BuiltinFunction,
     Function,
     Empty
@@ -26,6 +27,7 @@ pub enum Res {
     Bool(bool),
     Int(i64),
     Str(String),
+    List(Vec<Res>),
     Func(ASTNode)
 }
 
@@ -36,7 +38,20 @@ impl Res {
             Res::Bool(b) => b.to_string(),
             Res::Int(i) => i.to_string(),
             Res::Func(f) => format!("{:?}", f),
-            Res::Str(s) => s.clone()
+            Res::Str(s) => s.clone(),
+            Res::List(v) => {
+                let mut v_clone = v.clone();
+                v_clone.reverse();
+                let mut out: String = String::new();
+                for i in 0..v_clone.len() {
+                    if i == 0 {
+                        out.push_str(&v_clone[i].to_string());
+                    } else {
+                        out.push_str(&format!(" {}", v_clone[i].to_string()));
+                    }
+                }
+                return format!("[{}]", out);
+            }
         }
     }
 }

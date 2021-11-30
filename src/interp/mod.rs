@@ -7,6 +7,7 @@ mod interp_nary;
 mod interp_while;
 mod interp_builtin;
 mod interp_import;
+mod interp_list;
 mod utils;
 
 use crate::{ast_type::{

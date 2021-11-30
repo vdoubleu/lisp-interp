@@ -39,8 +39,10 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
             let interp_res = interp_ast(&arg, store, interp_args);
             if let Res::Str(s) = interp_res {
                 return Res::Int(s.len() as i64);
+            } else if let Res::List(l) = interp_res {
+                return Res::Int(l.len() as i64);
             } else {
-                panic!("len takes a string argument, the following is not a string: {}", interp_res.to_string());
+                panic!("len takes a string or a list");
             }
         },
         "str" => {
@@ -89,7 +91,66 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
                 
             println!("{}\n", &s);
             println!("{}", String::from_utf8_lossy(&output.stdout));
-            return Res::Str(String::from_utf8(output.stdout).unwrap());
+            let out = Res::Str(String::from_utf8(output.stdout).unwrap());
+            let err = Res::Str(String::from_utf8(output.stderr).unwrap());
+
+            return Res::List(vec![err, out]);
+        },
+        "first" => {
+            if args.len() != 1 {
+                panic!("first takes exactly one argument");
+            }
+
+            let arg = args[0].clone();
+            let interp_res = interp_ast(&arg, store, interp_args);
+            if let Res::List(l) = interp_res {
+                if l.len() == 0 {
+                    return Res::List(vec![]);
+                } else {
+                    return l[l.len() - 1].clone();
+                }
+            } else {
+                panic!("first takes a list");
+            }
+        },
+        "rest" => {
+            if args.len() != 1 {
+                panic!("rest takes exactly one argument");
+            }
+
+            let arg = args[0].clone();
+            let interp_res = interp_ast(&arg, store, interp_args);
+            if let Res::List(l) = interp_res {
+                if l.len() == 0 {
+                    return Res::List(vec![]);
+                } else {
+                    return Res::List(l[..l.len() - 1].to_vec());
+                }
+            } else {
+                panic!("rest takes a list");
+            }
+        },
+        "cons" => {
+            if args.len() != 2 {
+                panic!("cons takes exactly two arguments");
+            }
+
+            let arg1 = args[0].clone();
+            let arg2 = args[1].clone();
+            let interp_res1 = interp_ast(&arg1, store, interp_args);
+            let interp_res2 = interp_ast(&arg2, store, interp_args);
+            if let Res::List(l2) = interp_res2 {
+                if let Res::NoRes = interp_res1 {
+                    // first res is empty, so (cons none l2) = l2
+                    return Res::List(l2);
+                }
+
+                let mut out = l2.clone();
+                out.push(interp_res1);
+                return Res::List(out);
+            } else {
+                panic!("cons takes two lists");
+            }
         },
         _ => {
             panic!("Unknown builtin function: {}", def);

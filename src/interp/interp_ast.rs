@@ -1,11 +1,14 @@
-use crate::interp::interp_val::interp_val;
-use crate::interp::interp_func::interp_func;
-use crate::interp::interp_if::interp_if;
-use crate::interp::interp_while::interp_while;
-use crate::interp::interp_let::interp_let;
-use crate::interp::interp_nary::interp_nary_op;
-use crate::interp::interp_builtin::interp_builtin;
-use crate::interp::interp_import::interp_import;
+use crate::interp::{
+    interp_list::interp_list,
+    interp_import::interp_import,
+    interp_builtin::interp_builtin,
+    interp_nary::interp_nary_op,
+    interp_let::interp_let,
+    interp_while::interp_while,
+    interp_if::interp_if,
+    interp_func::interp_func,
+    interp_val::interp_val,
+};
 use crate::ast_type::{
     ASTNode,
     Res,
@@ -37,5 +40,6 @@ pub fn interp_ast(ast: &ASTNode, store: &mut Vec<HashMap<String, Res>>, interp_a
         NodeType::Empty => {
             panic!("Interping empty node type");
         },
+        NodeType::List => interp_list(&ast.children, store, interp_args),
     }
 }

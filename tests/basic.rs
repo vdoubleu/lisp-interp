@@ -93,7 +93,21 @@ fn basic_13() {
 
 #[test]
 fn basic_14() {
-    let r1 = run_just_prog(&"(+ (shell \"echo hi\") (shell \"echo\" \"there\"))".to_string()).to_string();
+    let r1 = run_just_prog(&"(+ (first (shell \"echo hi\")) (first (shell \"echo\" \"there\")))".to_string()).to_string();
     let r2 = "hi\nthere\n";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn basic_15() {
+    let r1 = run_just_prog(&"(+ (first [2 3 4]) (first [1 2 3 4])".to_string()).to_string();
+    let r2 = "3";
+    assert_eq!(r1, r2);
+}
+
+#[test]
+fn basic_16() {
+    let r1 = run_just_prog(&"(cons (first [(- 4 3) 2]) (rest [2 3 4]))".to_string()).to_string();
+    let r2 = "[1 3 4]";
     assert_eq!(r1, r2);
 }
