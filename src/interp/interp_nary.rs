@@ -46,6 +46,14 @@ fn check_res_vec_all_type(v: &Vec<Res>, typ: Res) -> bool {
             });
 }
 
+#[test]
+fn test_check_res_vec_all_type() {
+    let v = vec![Res::Int(0), Res::Int(0), Res::Int(0)];
+    assert_eq!(check_res_vec_all_type(&v, Res::Int(0)), true);
+    let v = vec![Res::Int(0), Res::Int(0), Res::Str("".to_string())];
+    assert_eq!(check_res_vec_all_type(&v, Res::Int(0)), false);
+}
+
 fn str_nary_op(def: &String, args: &Vec<Res>) -> String {
     let string_args: Vec<String> = args.iter().map(|x| {
         match &x {
@@ -58,6 +66,11 @@ fn str_nary_op(def: &String, args: &Vec<Res>) -> String {
         "+" => return string_args.join(&"".to_string()),
         _ => panic!("Unrecognised string nary op: {}", &def),
     }
+}
+
+#[test]
+fn test_str_nary_op() {
+    assert_eq!(str_nary_op(&"+".to_string(), &vec![Res::Str("a".to_string()), Res::Str("b".to_string())]), "ab".to_string());
 }
 
 fn logic_nary_op(def: &String, args: &Vec<Res>) -> bool {
@@ -73,6 +86,12 @@ fn logic_nary_op(def: &String, args: &Vec<Res>) -> bool {
         "&&" => bool_args.iter().all(|x| *x),
         other => panic!("unexpected logic operation: {}", other),
     }
+}
+
+#[test]
+fn test_logic_nary_op() {
+    assert_eq!(logic_nary_op(&"||".to_string(), &vec![Res::Bool(true), Res::Bool(false)]), true);
+    assert_eq!(logic_nary_op(&"&&".to_string(), &vec![Res::Bool(true), Res::Bool(false)]), false);
 }
 
 fn int_nary_op(def: &String, args: &Vec<Res>) -> i64 {
@@ -104,45 +123,82 @@ fn int_nary_op(def: &String, args: &Vec<Res>) -> i64 {
     }
 }
 
+#[test]
+fn test_int_nary_op() {
+    assert_eq!(int_nary_op(&"+".to_string(), &vec![Res::Int(1), Res::Int(2), Res::Int(3)]), 6);
+    assert_eq!(int_nary_op(&"-".to_string(), &vec![Res::Int(1), Res::Int(2), Res::Int(3)]), -4);
+    assert_eq!(int_nary_op(&"*".to_string(), &vec![Res::Int(1), Res::Int(2), Res::Int(3)]), 6);
+    assert_eq!(int_nary_op(&"/".to_string(), &vec![Res::Int(4), Res::Int(2), Res::Int(3)]), 0);
+}
+
 fn equality_nary_op(def: &String, args: &Vec<Res>) -> bool {
+    let mut int_first: i64 = 0;
+    let mut string_first: String = "".to_string();
+    let mut bool_first: bool = false;
+
     let mut int_args: Vec<i64> = Vec::new();
     let mut string_args: Vec<String> = Vec::new();
     let mut bool_args: Vec<bool> = Vec::new();
 
+    let mut is_first = true;
+
     for arg in args {
-        match arg {
-            Res::Int(i) => int_args.push(*i),
-            Res::Str(s) => string_args.push(s.clone()),
-            Res::Bool(b) => bool_args.push(*b),
-            _ => panic!("unexpected type in equality op"),
-        }
+        if is_first {
+            match arg {
+                Res::Int(i) => int_first = *i,
+                Res::Str(s) => string_first = s.clone(),
+                Res::Bool(b) => bool_first = *b,
+                _ => panic!("expected int, string or bool in equality op"),
+            }
+            is_first = false;
+        } else {
+            match arg {
+                Res::Int(i) => int_args.push(*i),
+                Res::Str(s) => string_args.push(s.clone()),
+                Res::Bool(b) => bool_args.push(*b),
+                _ => panic!("unexpected type in equality op"),
+            }
+        }  
     }
 
     match def.as_ref() {
         "==" => {
-            if int_args.len() == args.len() {
-                return int_args.iter().all(|x| *x == *int_args.first().unwrap());
-            } else if string_args.len() == args.len() {
-                return string_args.iter().all(|x| *x == *string_args.first().unwrap());
-            } else if bool_args.len() == args.len() {
-                return bool_args.iter().all(|x| *x == *bool_args.first().unwrap());
+            if int_args.len() == args.len() - 1 {
+                return int_args.iter().all(|x| *x == int_first);
+            } else if string_args.len() == args.len() - 1 {
+                return string_args.iter().all(|x| *x == string_first);
+            } else if bool_args.len() == args.len() - 1 {
+                return bool_args.iter().all(|x| *x == bool_first);
             } else {
                 panic!("unexpected type in equality op");
             }
         },
         "!=" => {
-            if int_args.len() == args.len() {
-                return int_args.iter().any(|x| *x != *int_args.first().unwrap());
-            } else if string_args.len() == args.len() {
-                return string_args.iter().any(|x| *x != *string_args.first().unwrap());
-            } else if bool_args.len() == args.len() {
-                return bool_args.iter().any(|x| *x != *bool_args.first().unwrap());
+            if int_args.len() == args.len() - 1 {
+                return int_args.iter().all(|x| *x != int_first);
+            } else if string_args.len() == args.len() - 1 {
+                return string_args.iter().all(|x| *x != string_first);
+            } else if bool_args.len() == args.len() - 1 {
+                return bool_args.iter().all(|x| *x != bool_first);
             } else {
                 panic!("unexpected type in inequality op");
             }
         },
         other => panic!("Unrecognised operation: {}", other),
     }
+}
+
+#[test]
+fn test_equality_nary_op() {
+    assert_eq!(equality_nary_op(&"==".to_string(), &vec![Res::Int(1), Res::Int(1)]), true);
+    assert_eq!(equality_nary_op(&"==".to_string(), &vec![Res::Int(1), Res::Int(2)]), false);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Int(1), Res::Int(1)]), false);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Int(1), Res::Int(2)]), true);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Str("a".to_string()), Res::Str("a".to_string())]), false);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Str("a".to_string()), Res::Str("b".to_string())]), true);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Bool(true), Res::Bool(true)]), false);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Bool(true), Res::Bool(false)]), true);
+    assert_eq!(equality_nary_op(&"!=".to_string(), &vec![Res::Bool(true), Res::Bool(false), Res::Bool(true)]), false);
 }
 
 fn bool_nary_op(def: &String, args: &Vec<Res>) -> bool {
@@ -170,3 +226,17 @@ fn bool_nary_op(def: &String, args: &Vec<Res>) -> bool {
     }
 }
 
+#[test]
+fn test_bool_nary_op() {
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(1), Res::Int(2)]), false);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(2), Res::Int(1)]), true);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(1), Res::Int(1)]), false);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(2), Res::Int(2)]), false);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(2), Res::Int(1), Res::Int(1)]), true);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(1), Res::Int(2), Res::Int(1)]), false);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(1), Res::Int(1), Res::Int(2)]), false);
+    assert_eq!(bool_nary_op(&">".to_string(), &vec![Res::Int(2), Res::Int(2), Res::Int(2)]), false);
+    assert_eq!(bool_nary_op(&">=".to_string(), &vec![Res::Int(1), Res::Int(2)]), false);
+    assert_eq!(bool_nary_op(&">=".to_string(), &vec![Res::Int(2), Res::Int(1)]), true);
+    assert_eq!(bool_nary_op(&">=".to_string(), &vec![Res::Int(1), Res::Int(1)]), true);
+}

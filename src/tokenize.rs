@@ -47,3 +47,61 @@ pub fn tokenize(s: &String) -> Vec<String> {
     return tokens;
 }
 
+#[test]
+fn test_tokenize() {
+    assert_eq!(tokenize(&"(+ (f [(+ 1 (g \"yes\" \"there\")) 2 \"word\"]) 2)".to_string()), vec![
+        "(".to_string(),
+        "seq".to_string(),
+        "(".to_string(),
+        "+".to_string(),
+        "(".to_string(),
+        "f".to_string(),
+        "[".to_string(),
+        "(".to_string(),
+        "+".to_string(),
+        "1".to_string(),
+        "(".to_string(),
+        "g".to_string(),
+        "\"yes\"".to_string(),
+        "\"there\"".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+        "2".to_string(),
+        "\"word\"".to_string(),
+        "]".to_string(),
+        ")".to_string(),
+        "2".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+    ]);
+
+    assert_eq!(tokenize(&"(while (< n 10) (seq (print n) (let n (- n 1))))".to_string()), vec![
+        "(".to_string(),
+        "seq".to_string(),
+        "(".to_string(),
+        "while".to_string(),
+        "(".to_string(),
+        "<".to_string(),
+        "n".to_string(),
+        "10".to_string(),
+        ")".to_string(),
+        "(".to_string(),
+        "seq".to_string(),
+        "(".to_string(),
+        "print".to_string(),
+        "n".to_string(),
+        ")".to_string(),
+        "(".to_string(),
+        "let".to_string(),
+        "n".to_string(),
+        "(".to_string(),
+        "-".to_string(),
+        "n".to_string(),
+        "1".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+        ")".to_string(),
+    ]);
+}

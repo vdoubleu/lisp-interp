@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum NodeType {
     NaryOp,
     Val,
@@ -14,14 +14,14 @@ pub enum NodeType {
 }
 
 // (def ...children)
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ASTNode {
     pub node_type: NodeType,
     pub def: String,
     pub children: Vec<ASTNode>
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Res {
     NoRes,
     Bool(bool),

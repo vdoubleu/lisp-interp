@@ -22,8 +22,27 @@ fn val_is_int(def: &String) -> Option<i64> {
     }
 }
 
+#[test]
+fn test_val_is_int() {
+    assert_eq!(val_is_int(&String::from("1")), Some(1));
+    assert_eq!(val_is_int(&String::from("-1")), Some(-1));
+    assert_eq!(val_is_int(&String::from("0")), Some(0));
+    assert_eq!(val_is_int(&String::from("-0")), Some(0));
+    assert_eq!(val_is_int(&String::from("1.0")), None);
+    assert_eq!(val_is_int(&String::from("one")), None);
+    assert_eq!(val_is_int(&String::from("1hello2")), None);  
+    assert_eq!(val_is_int(&String::from("123")), Some(123));
+}
+
 fn val_is_bool(def: &String) -> Option<bool> {
     return if def == "true" || def == "false" { Some(def == "true") } else { None };
+}
+
+#[test]
+fn test_val_is_bool() {
+    assert_eq!(val_is_bool(&String::from("true")), Some(true));
+    assert_eq!(val_is_bool(&String::from("false")), Some(false));
+    assert_eq!(val_is_bool(&String::from("1")), None);
 }
 
 fn val_is_var(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: bool) -> Option<Res> {
@@ -48,10 +67,35 @@ fn val_is_var(def: &String, store: &Vec<HashMap<String, Res>>, permit_func: bool
     return None
 }
 
+#[test]
+fn test_val_is_var() {
+    let mut store: Vec<HashMap<String, Res>> = Vec::new();
+    let mut s: HashMap<String, Res> = HashMap::new();
+    s.insert(String::from("a"), Res::Int(1));
+    store.push(s);
+    s = HashMap::new();
+    s.insert(String::from("b"), Res::Int(2));
+    store.push(s);
+    assert_eq!(val_is_var(&String::from("a"), &store, false), Some(Res::Int(1)));
+    assert_eq!(val_is_var(&String::from("b"), &store, false), Some(Res::Int(2)));
+    assert_eq!(val_is_var(&String::from("c"), &store, false), None);
+}
+
 fn val_is_string(def: &String) -> Option<String> {
     return if def.chars().last().unwrap() == '"' && def.chars().next().unwrap() == '"' {
         Some((&def[1..def.to_string().len()-1]).to_string())
     } else {
         None
     };
+}
+
+#[test]
+fn test_val_is_string() {
+    assert_eq!(val_is_string(&String::from("\"hello\"")), Some(String::from("hello")));
+    assert_eq!(val_is_string(&String::from("\"hello world\"")), Some(String::from("hello world")));
+    assert_eq!(val_is_string(&String::from("\"hello\\\"world\"")), Some(String::from("hello\\\"world")));
+    assert_eq!(val_is_string(&String::from("\"   hello  \" world  \"")), Some(String::from("   hello  \" world  ")));
+    assert_eq!(val_is_string(&String::from("\"   hello  \" world  ")), None);
+    assert_eq!(val_is_string(&String::from("   hello  \" \" world  ")), None);
+    assert_eq!(val_is_string(&String::from("  hello world  ")), None);
 }
