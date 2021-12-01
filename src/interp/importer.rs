@@ -5,6 +5,7 @@ use crate::ast_type::{
 };
 use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 
 pub fn import_module(path: &String, store: &mut Vec<HashMap<String, Res>>, interp_args: &InterpArgs) -> Res {
@@ -42,8 +43,8 @@ fn find_stdlib(lib_name: &String, interp_args: &InterpArgs) -> Option<String> {
 }
 
 pub fn get_stdlib(def: &String) -> Option<String> {
-    let list_defs = vec!("second", "third", "last", "reverse", "empty?", "ind", "append");
-    let string_defs = vec!("concat-string-list", "substr-start", "substr-end");
+    let list_defs = HashSet::from(["second", "third", "last", "reverse", "empty?", "ind", "append"]);
+    let string_defs = HashSet::from(["concat-string-list", "substr-start", "substr-end"]);
 
     if list_defs.contains(&def.as_str()) {
         return Some(String::from("list"));
