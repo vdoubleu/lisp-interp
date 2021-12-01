@@ -48,6 +48,19 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
                 panic!("len takes a string or a list");
             }
         },
+        "not" => {
+            if args.len() != 1 {
+                panic!("not takes exactly one argument");
+            }
+
+            let arg = args[0].clone();
+            let interp_res = interp_ast(&arg, store, interp_args);
+            if let Res::Bool(b) = interp_res {
+                return Res::Bool(!b);
+            } else {
+                panic!("not takes a bool");
+            }
+        },
         "str" => {
             let mut s = String::new();
             for arg in args {

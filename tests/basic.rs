@@ -113,4 +113,11 @@ mod basic_tests {
         let r2 = "[1 3 4]";
         assert_eq!(r1, r2);
     }
+
+    #[test]
+    fn basic_17() {
+        let r1 = run_just_prog(&"(|| (not true) (not (not false)))".to_string()).to_string();
+        let r2 = "false";
+        assert_eq!(r1, r2);
+    }
 }
