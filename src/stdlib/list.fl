@@ -1,3 +1,5 @@
+;; reverses a list
+;; full-lst: [any]
 (let (reverse full-lst)
     (seq
     (let (rev-help lst acc)
@@ -6,20 +8,31 @@
         (rev-help (rest lst) (cons (first lst) acc))))
     (rev-help full-lst [])))
 
+;; checks if list is empty
+;; lst: [any]
 (let (empty? lst)
     (== (len lst) 0))
 
+;; returns second element in list, or [] otherwise
+;; lst: [any]
 (let (second lst)
     (first (rest lst)))
 
+;; returns third element in list, or [] otherwise
+;; lst: [any]
 (let (third lst)
     (first (rest (rest lst))))
 
+;; returns last element in list, or [] otherwise
+;; lst: [any]
 (let (last lst)
     (if (empty? (rest lst))
         (first lst)
         (last (rest lst))))
 
+;; returns the ith element in the list, or [] otherwise
+;; lst: [any]
+;; i: num
 (let (ind lst i)
     (if (empty? lst)
         []
@@ -27,6 +40,9 @@
         (first lst)
         (ind (rest lst) (- i 1)))))
 
+;; appends an element to the end of the list
+;; lst: [any]
+;; n: any
 (let (append lst n)
     (if (empty? lst)
         [n]

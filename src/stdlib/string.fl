@@ -1,3 +1,5 @@
+;; concatenates a list of strings into a single string
+;; lst: [str]
 (let (concat-string-list lst)
     (seq 
     (let (concat-string-list-help l acc)
@@ -6,6 +8,9 @@
             (concat-string-list-help (rest l) (+ acc (first l)))))
     (concat-string-list-help lst "")))
 
+;; gives substring of s starting at start-ind
+;; s: str
+;; start-ind: num
 (let (substr-start s start-ind)
     (seq
     (let (substr-start-help l start)
@@ -14,6 +19,9 @@
             (substr-start-help (rest l) (- start 1))))
     (concat-string-list (substr-start-help (list s) start-ind))))
 
+;; gives substring of s ending at end-ind
+;; s: str
+;; end-ind: num
 (let (substr-end s end-ind)
     (seq
     (let (substr-end-help l end acc)
