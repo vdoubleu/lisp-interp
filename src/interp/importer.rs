@@ -39,8 +39,12 @@ fn find_stdlib(lib_name: &String, interp_args: &InterpArgs) -> Option<String> {
 
 pub fn get_stdlib(def: &String) -> Option<String> {
     let list_defs = vec!("second", "third", "last", "reverse", "empty?", "ind", "append");
+    let string_defs = vec!("concat-string-list", "substr-start", "substr-end");
+
     if list_defs.contains(&def.as_str()) {
         return Some(String::from("list"));
+    } else if string_defs.contains(&def.as_str()) {
+        return Some(String::from("string"));
     } else {
         return None;
     }

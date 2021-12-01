@@ -80,7 +80,9 @@ fn is_nary_op(s: &String) -> bool {
 }
 
 fn is_builtin(s: &String) -> bool {
-    let built_ins = vec!("print", "println", "read", "len", "num", "str", "bool", "shell", "first", "rest", "cons");
+    let built_ins = vec!("print", "println", "read", "len", "num", 
+    "str", "bool", "list", "shell", "first", "rest", "cons",
+    "string?", "num?", "bool?", "func?", "list?");
     return built_ins.contains(&s.as_str());
 }
 

@@ -7,6 +7,7 @@ use std::io::{
 };
 use std::fs;
 use crate::reader::interp_args::InterpArgs;
+use crate::cleaner::remove_comment_in_line;
 use clap::{
     Arg,
     App,
@@ -22,7 +23,7 @@ pub fn read(interp_args: &InterpArgs) -> String {
     let mut prog: String = "".to_string();
     for line in reader.lines() {
         match line {
-            Ok(l) => prog += &(" ".to_string() + &l),
+            Ok(l) => prog += remove_comment_in_line(&(" ".to_string() + &l)).as_str(),
             Err(e) => panic!("Error: {}", e),
         }
     }

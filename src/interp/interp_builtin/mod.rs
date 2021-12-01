@@ -1,8 +1,11 @@
+mod type_huh;
+
 use crate::interp::interp_ast::interp_ast;
 use crate::ast_type::{
     Res,
     ASTNode
 };
+use crate::interp::interp_builtin::type_huh::type_huh;
 use crate::reader::interp_args::InterpArgs;
 use std::collections::HashMap;
 
@@ -78,6 +81,26 @@ pub fn interp_builtin(def: &String, args: &Vec<ASTNode>, store: &mut Vec<HashMap
             }
             return Res::Bool(s.parse::<bool>().unwrap());
         },
+        "list" => {
+            if args.len() == 1 {
+                let r = interp_ast(&args[0], store, interp_args);
+                
+                if let Res::Str(s) = r {
+                    let mut l: Vec<Res> = s.chars().map(|c| Res::Str(c.to_string())).collect();
+                    l.reverse();
+                    return Res::List(l);
+                } else {
+                    panic!("list type conversion only supports a string as an argument");
+                }
+            } else {
+                panic!("list type conversion takes one argument");
+            }
+        },
+        "string?" => type_huh(&String::from("string?"), args, store, Res::Str(String::from("")), interp_args), 
+        "num?" => type_huh(&String::from("num?"), args, store, Res::Int(0), interp_args), 
+        "bool?" => type_huh(&String::from("bool?"), args, store, Res::Bool(false), interp_args),
+        "func?" => type_huh(&String::from("func?"), args, store, Res::Func(ASTNode::default()), interp_args),
+        "list?" => type_huh(&String::from("list?"), args, store, Res::List(vec![]), interp_args),
         "shell" => {
             let mut s = String::new();
             for arg in args {

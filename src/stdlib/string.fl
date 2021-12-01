@@ -1,0 +1,24 @@
+(let (concat-string-list lst)
+    (seq 
+    (let (concat-string-list-help l acc)
+        (if (== 0 (len l))
+            acc
+            (concat-string-list-help (rest l) (+ acc (first l)))))
+    (concat-string-list-help lst "")))
+
+(let (substr-start s start-ind)
+    (seq
+    (let (substr-start-help l start)
+        (if (== 0 start)
+            l
+            (substr-start-help (rest l) (- start 1))))
+    (concat-string-list (substr-start-help (list s) start-ind))))
+
+(let (substr-end s end-ind)
+    (seq
+    (let (substr-end-help l end acc)
+        (if (|| (== 0 end) (empty? l))
+            acc
+            (substr-end-help (rest l) (- end 1) (+ acc (first l)))))
+    (substr-end-help (list s) end-ind "")))
+

@@ -21,6 +21,16 @@ pub struct ASTNode {
     pub children: Vec<ASTNode>
 }
 
+impl ASTNode {
+    pub fn default() -> ASTNode {
+        ASTNode {
+            node_type: NodeType::Empty,
+            def: String::new(),
+            children: Vec::new()
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum Res {
     NoRes,
