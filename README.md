@@ -3,7 +3,7 @@
 A faux lisp interpreter written in Rust. A general programming language with a lisp-like syntax. It currently supports basic expressions like while loops, if statements, functions, modules, and variables; as well as standard data types like strings, numbers, booleans, and even lists.
 
 # Build and Run
- To build the interpreter, first clone the repository. Then, simply run `cargo build --release` in the main directory of the project. After that, you should be able to find the binary under `target/release`.
+ To build the interpreter, first clone the repository. Then, simply run the provided install.sh script like so `./build_install.sh` in the main directory of the project. This should build, test, and install the binary into the appropriate location. If you would like to install the binary to an alternate location, you made need to modify the script. The script will also copy over stdlib files into a standard location. If you wish to install these elsewhere, you may need to include the path where you have them installed when you run the interpreter. Run `fl --help` for a list of flags available to you for when you run the interpreter.
 
 # Features
 The most basic program looks like this:
@@ -104,7 +104,7 @@ Working with data types like booleans and strings is as you would expect.
 (print (== "3" (string (num "3"))))
 ```
 
-Working with lists is similar to other functional langauges. The functions `(first <list>)` and `(rest <list>)` are defined for lists and are useful getting elements in a list. You can also extend lists using `(cons <element> <list>)`. To define large lists, instead of chaining `cons` operators together, you can also use square bracket notation like so: `(print [1 2 3 4 5])`.
+Working with lists is similar to other functional languages. The functions `(first <list>)` and `(rest <list>)` are defined for lists and are useful getting elements in a list. You can also extend lists using `(cons <element> <list>)`. To define large lists, instead of chaining `cons` operators together, you can also use square bracket notation like so: `(print [1 2 3 4 5])`.
 
 Below is an example of a function that reverses a list:
 ```

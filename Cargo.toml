@@ -1,5 +1,5 @@
 [package]
-name = "interp"
+name = "fl"
 version = "0.1.0"
 author = ["Victor Wang"]
 description = "A simple faux lisp interpreter"

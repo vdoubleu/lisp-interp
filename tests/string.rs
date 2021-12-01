@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod string_tests {
-    use interp::runner::run_just_prog;
+    use fl::runner::run_just_prog;
 
     #[test]
     fn concat_string_list() {

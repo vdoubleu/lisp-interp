@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod fib_tests {
-    use interp::runner::run_just_prog;
+    use fl::runner::run_just_prog;
 
     #[test]
     fn fib_rec() {

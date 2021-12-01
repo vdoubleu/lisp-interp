@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod import_tests {
-    use interp::runner::run_just_prog;
+    use fl::runner::run_just_prog;
 
     #[test]
     fn test_import() {

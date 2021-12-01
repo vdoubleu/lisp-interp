@@ -30,8 +30,12 @@ fn find_stdlib(lib_name: &String, interp_args: &InterpArgs) -> Option<String> {
         format!{"src/stdlib/{}.fl", lib_name} 
     };
 
+    let include_path = format!("/usr/include/fl/{}.fl", lib_name);
+
     if std::path::Path::new(&lib_path).exists() {
         return Some(lib_path);
+    } else if std::path::Path::new(&include_path).exists() {
+        return Some(include_path);
     } else {
         return None;
     }
