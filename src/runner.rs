@@ -10,6 +10,7 @@ use crate::tokenize::tokenize;
 use crate::ast_builder::build_ast;
 use crate::cleaner::clean;
 use crate::reader::interp_args::InterpArgs;
+use crate::checker::check_prog;
 use std::collections::HashMap;
 
 
@@ -61,6 +62,11 @@ pub fn run_just_prog(prog: &String) -> Res {
 
 fn prep_prog(prog: &String, interp_args: &InterpArgs) -> Option<ASTNode> {
     let cleaned_prog: String = clean(&prog);
+
+    if let Err(e) = check_prog(&cleaned_prog) {
+        panic!("{}", e);
+    }
+
     let tokens: Vec<String> = tokenize(&cleaned_prog);
 
     if interp_args.print_tokens {

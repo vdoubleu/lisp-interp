@@ -102,7 +102,7 @@ mod basic_tests {
 
     #[test]
     fn basic_15() {
-        let r1 = run_just_prog(&"(+ (first [2 3 4]) (first [1 2 3 4])".to_string()).to_string();
+        let r1 = run_just_prog(&"(+ (first [2 3 4]) (first [1 2 3 4]))".to_string()).to_string();
         let r2 = "3";
         assert_eq!(r1, r2);
     }

@@ -5,6 +5,7 @@ mod tokenize;
 mod ast_builder;
 mod reader;
 mod cleaner;
+mod checker;
 
 use crate::runner::run_prog;
 use crate::reader::{
